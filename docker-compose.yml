@@ -1,41 +1,32 @@
 version: '3.8'
 
 services:
-  backend:
-    image: my-backend
-    build:
-      context: .
+  app:
+    build: .
+    container_name: spring_app
+    restart: always
     ports:
-      - "8088:8088"
+      - "8080:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/safety
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-    volumes:
-      - /home/user/photos:/app/photos  # <== Привязываем папку сервера к контейнеру
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/safety?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
     depends_on:
       - db
 
-
-#  frontend:
-#    image: my-frontend
-#    build:
-#      context: ./frontend
-#    ports:
-#      - "3000:80"
-#    depends_on:
-#      - backend
-
   db:
     image: mysql:8
+    container_name: mysql_db
     restart: always
     environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: safety
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
-      - db_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
 
 volumes:
-  db_data:
+  mysql_data:

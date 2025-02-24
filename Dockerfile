@@ -1,8 +1,11 @@
-# Используем официальный образ OpenJDK 17
+# Используем официальный образ OpenJDK
 FROM openjdk:17-jdk-slim
+
+# Устанавливаем рабочую директорию
 WORKDIR /app
-# Копируем JAR-файл приложения
-COPY target/demo-0.0.1-SNAPSHOT.jar app.jar
+
+# Копируем jar файл в контейнер
+COPY target/myapp.jar app.jar
+
 # Запускаем приложение
 ENTRYPOINT ["java", "-jar", "app.jar"]
-EXPOSE 8088
