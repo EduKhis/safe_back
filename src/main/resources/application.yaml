@@ -13,7 +13,7 @@ spring:
   datasource:
 #    url: jdbc:mysql://127.0.0.1:3306/safety
  #   url: jdbc:mysql://db:3306/safety
-    url: jdbc:mysql://217.114.3.39:3306/safety
+    url: jdbc:mysql://db:3306/safety
     username: root
     password: ${DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
