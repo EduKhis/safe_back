@@ -10,7 +10,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/safety
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=1234
+      - SPRING_DATASOURCE_PASSWORD=)Z_Br9Rgv4aM
     volumes:
       - /home/user/photos:/app/photos  # <== Привязываем папку сервера к контейнеру
     depends_on:
