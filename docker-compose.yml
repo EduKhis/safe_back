@@ -4,7 +4,7 @@ services:
   backend:
     image: my-backend
     build:
-      context: ./backend
+      context: .
     ports:
       - "8088:8088"
     environment:
