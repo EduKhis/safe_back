@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   frontend:
-    build: ../client/safe_front  # Указываем путь к папке фронта
+    build: ../../client/safe_front  # Указываем путь к папке фронта
     container_name: react_frontend
     restart: always
     ports:
