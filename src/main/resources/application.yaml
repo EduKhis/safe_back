@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: demo
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect
+  web:
+    resources:
+      add-mappings: true
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/safety
+#    url: jdbc:mysql://db:3306/safety
+    username: root
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+server:
+  port: 8088
+
+category:
+  risk: р1, р2, р3
+  ef: эф1, эф2, эф3
+
+photo:
+#  url: C:\Users\e.khisamutdinov\IdeaProjects\demo\src\main\resources\static\images
+  url: /app/photos
