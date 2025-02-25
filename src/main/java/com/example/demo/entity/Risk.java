@@ -57,10 +57,10 @@ public class Risk {
 
     private Type type;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private MapPoint mapPoint;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) // Автосохранение и удаление комментариев
     private List<Comment> commentsList;
 
 

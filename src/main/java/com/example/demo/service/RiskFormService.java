@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.Criticaly;
 import com.example.demo.dto.MapPoint;
+import com.example.demo.dto.Status;
 import com.example.demo.dto.Type;
 import com.example.demo.entity.Location;
 import com.example.demo.entity.Risk;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +76,10 @@ public class RiskFormService {
         risk.setAnonymity(isAnonymous);
         risk.setPhotosList(getFilesList(files));
         risk.setMapPoint(getMapPoint(point));
+        risk.setStatus(Status.POSTED);
+        risk.setDateTimeFix(LocalDateTime.now());
+
+        System.out.println(risk.toString());
 
         riskRepository.save(risk);
     }
