@@ -23,7 +23,11 @@ spring:
       max-file-size: 200MB
       max-request-size: 200MB
 server:
-  port: 8080
+  port: 8443
+  ssl:
+    key-store: classpath:myserver.keystore
+    key-password: 1q2w3e4r5t
+    key-store-password: 1q2w3e4r5t
 
 category:
   risk: р1, р2, р3
