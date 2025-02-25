@@ -25,7 +25,7 @@ spring:
 server:
   port: 8443
   ssl:
-    key-store: classpath:myserver.keystore
+    key-store: \myserver.keystore
     key-password: 1q2w3e4r5t
     key-store-password: 1q2w3e4r5t
 
