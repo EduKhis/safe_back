@@ -31,7 +31,7 @@ category:
 
 photo:
 #  url: C:\Users\e.khisamutdinov\IdeaProjects\demo\src\main\resources\static\images
-  url: /server/safe_back/src/main/resources/static/images
+  url: \server\safe_back\src\main\resources\static\images
 
 cors:
   origins: ${CORS:http://217.114.3.39:3000}
