@@ -1,0 +1,234 @@
+spring:
+  application:
+    name: demo
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect
+  web:
+    resources:
+      add-mappings: true
+  datasource:
+ #   url: jdbc:mysql://127.0.0.1:3306/safety
+    url: jdbc:mysql://217.114.3.39:3306/safety
+   # url: jdbc:mysql://db:3306/safety
+    username: root
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+server:
+  port: 8080
+
+category:
+  risk: р1, р2, р3
+  ef: эф1, эф2, эф3
+
+photo:
+#  url: C:\Users\e.khisamutdinov\IdeaProjects\demo\src\main\resources\static\images
+  url: \server\safe_back\src\main\resources\static\images
+
+cors:
+  origins: ${CORS:https://217.114.3.39}
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.1.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.example</groupId>
+	<artifactId>demo</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>demo</name>
+	<description>demo</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
+package com.example.demo.controller;
+
+import com.example.demo.dto.*;
+import com.example.demo.entity.Risk;
+import com.example.demo.repository.RiskRepository;
+import com.example.demo.mapper.RiskMapper;
+import com.example.demo.service.MapService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+
+@CrossOrigin(origins = "${cors.origins}")
+@RestController
+@RequestMapping("/map")
+@RequiredArgsConstructor
+public class MapController {
+
+private final MapService mapService;
+
+    @GetMapping("/points")
+    public List<RiskMapDto> getMapPoints() {
+        return mapService.getMapPoints();
+    }
+}
+
+import React, { useState } from 'react';
+import axios from 'axios';
+import TopMenu from './components/TopMenu';
+import Sidebar from './components/Sidebar';
+import SectionHeader from './components/SectionHeader';
+import MainContent from './components/MainContent';
+import './styles/App.css';
+
+const API_HOST = process.env.REACT_APP_API_HOST; // Вынесенный хост
+
+function App() {
+  const [risks, setRisks] = useState([]);
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [showRiskForm, setShowRiskForm] = useState(false);
+  const [collapsed, setCollapsed] = useState(false); // Только collapsed
+
+  const handleSidebarSelect = (selectedItem) => {
+    console.log(`Выбран раздел: ${selectedItem}`);
+    setSelectedSection(selectedItem);
+    setShowRiskForm(false);
+
+    if (selectedItem === 'risks-ideas') {
+      axios.get(`${API_HOST}/api/risks`)
+        .then(response => setRisks(response.data))
+        .catch(error => console.error(error));
+    } else {
+      setRisks([]);
+    }
+  };
+
+  const toggleSidebar = () => {
+    setCollapsed(!collapsed); // Переключаем только collapsed
+  };
+
+  const handleShowRiskForm = () => {
+    setShowRiskForm(true);
+  };
+
+  return (
+    <div className="app">
+      <TopMenu onToggleSidebar={toggleSidebar} />
+      <div className="main-container">
+        <Sidebar onSelect={handleSidebarSelect} collapsed={collapsed} />
+        <div className="main-content">
+          <SectionHeader selectedSection={selectedSection} onShowRiskForm={handleShowRiskForm} />
+          <MainContent selectedSection={selectedSection} risks={risks} showRiskForm={showRiskForm} setShowRiskForm={setShowRiskForm} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
+
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.4.5",
+    "@mui/material": "^6.4.5",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.9",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.5.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+  "start": "HTTPS=true react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
+
