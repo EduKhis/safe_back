@@ -23,11 +23,7 @@ spring:
       max-file-size: 200MB
       max-request-size: 200MB
 server:
-  port: 8443
-  ssl:
-    key-store: myserver.keystore
-    key-password: 1q2w3e4r5t
-    key-store-password: 1q2w3e4r5t
+  port: 8080
 
 category:
   risk: р1, р2, р3
@@ -38,4 +34,4 @@ photo:
   url: \server\safe_back\src\main\resources\static\images
 
 cors:
-  origins: ${CORS:https://217.114.3.39:3000}
+  origins: ${CORS:https://217.114.3.39}
