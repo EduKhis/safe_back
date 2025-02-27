@@ -1,136 +1,204 @@
-spring:
-  application:
-    name: demo
-  jpa:
-    hibernate:
-      ddl-auto: update
-    generate-ddl: false
-    properties:
-      hibernate.dialect: org.hibernate.dialect.MySQLDialect
-  web:
-    resources:
-      add-mappings: true
-  datasource:
- #   url: jdbc:mysql://127.0.0.1:3306/safety
-    url: jdbc:mysql://217.114.3.39:3306/safety
-   # url: jdbc:mysql://db:3306/safety
-    username: root
-    password: ${DB_PASSWORD:}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
+import { FaMapMarkerAlt } from 'react-icons/fa'; // Импортируем иконку
+import '../styles/RiskForm.css';
 
-  servlet:
-    multipart:
-      max-file-size: 200MB
-      max-request-size: 200MB
-server:
-  port: 8080
+const API_HOST = process.env.REACT_APP_API_HOST; // Вынесенный хост
 
-category:
-  risk: р1, р2, р3
-  ef: эф1, эф2, эф3
+const RiskForm = ({ onClose }) => {
+  const [type, setType] = useState('risk');
+  const [categories, setCategories] = useState([]);
+  const [divisions, setDivisions] = useState([]);
+  const [sectors, setSectors] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [selectedDivision, setSelectedDivision] = useState('');
+  const [selectedSector, setSelectedSector] = useState('');
+  const [selectedSection, setSelectedSection] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [importance, setImportance] = useState('none');
+  const [files, setFiles] = useState([]);
+  const [description, setDescription] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [point, setPoint] = useState('');
 
-photo:
-#  url: C:\Users\e.khisamutdinov\IdeaProjects\demo\src\main\resources\static\images
-  url: \server\safe_back\src\main\resources\static\images
+  useEffect(() => {
+      fetch(`${API_HOST}/api/getCategories?type=${type}`)
+      .then(response => response.json())
+      .then(data => setCategories(data))
+      .catch(error => console.error('Ошибка загрузки категорий:', error));
+  }, [type]);
 
-cors:
-  origins: ${CORS:https://217.114.3.39}
+  useEffect(() => {
+      fetch(`${API_HOST}/api/getDivisions`)
+      .then(response => response.json())
+      .then(data => setDivisions(data))
+      .catch(error => console.error('Ошибка загрузки подразделений:', error));
+  }, []);
 
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.4</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>demo</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
-	<properties>
-		<java.version>17</java.version>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
-</project>
-
-package com.example.demo.controller;
-
-import com.example.demo.dto.*;
-import com.example.demo.entity.Risk;
-import com.example.demo.repository.RiskRepository;
-import com.example.demo.mapper.RiskMapper;
-import com.example.demo.service.MapService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-
-@CrossOrigin(origins = "${cors.origins}")
-@RestController
-@RequestMapping("/map")
-@RequiredArgsConstructor
-public class MapController {
-
-private final MapService mapService;
-
-    @GetMapping("/points")
-    public List<RiskMapDto> getMapPoints() {
-        return mapService.getMapPoints();
+  useEffect(() => {
+    if (selectedDivision) {
+      fetch(`${API_HOST}/api/getSector?division=${selectedDivision}`)
+        .then(response => response.json())
+        .then(data => setSectors(data))
+        .catch(error => console.error('Ошибка загрузки участков:', error));
     }
-}
+  }, [selectedDivision]);
+
+  useEffect(() => {
+    if (selectedSector) {
+      fetch(`${API_HOST}/api/getSection?sector=${selectedSector}`)
+        .then(response => response.json())
+        .then(data => setSections(data))
+        .catch(error => console.error('Ошибка загрузки мест:', error));
+    }
+  }, [selectedSector]);
+
+  const handleFileChange = (event) => {
+    setFiles([...event.target.files]);
+  };
+
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Ваш браузер не поддерживает геолокацию.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setPoint(`${latitude}, ${longitude}`);
+      },
+      (error) => {
+        console.error("Ошибка получения местоположения:", error);
+        alert("Не удалось получить местоположение.");
+      }
+    );
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('type', type);
+    formData.append('description', description);
+    formData.append('division', selectedDivision);
+    formData.append('sector', selectedSector);
+    formData.append('section', selectedSection)
+    formData.append('category', selectedCategory);
+    formData.append('importance', importance);
+    formData.append('isAnonymous', isAnonymous);
+    formData.append('point', point);
+
+    files.forEach((file) => {
+      formData.append('files', file);
+    });
+
+    try {
+      const response = await axios.post(`${API_HOST}/api/submitForm`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (response.status === 200) {
+        alert('Форма успешно отправлена');
+      } else {
+        alert('Ошибка при отправке формы');
+      }
+    } catch (error) {
+      console.error('Ошибка при отправке:', error);
+      alert('Ошибка при отправке формы');
+    }
+  };
+
+  return (
+    <div className="risk-form">
+      <h2>Создать запись</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Риск или Идея?</label>
+          <div className="radio-group">
+            <input type="radio" id="risk" name="type" value="risk" checked={type === 'risk'} onChange={() => setType('risk')} />
+            <label htmlFor="risk">Риск</label>
+            <input type="radio" id="idea" name="type" value="idea" checked={type === 'idea'} onChange={() => setType('idea')} />
+            <label htmlFor="idea">Идея</label>
+          </div>
+        </div>
+        <div className="form-group">
+          <label>Описание *</label>
+          <textarea rows="4" required value={description} onChange={(e) => setDescription(e.target.value)} />
+        </div>
+        <div className="form-group">
+          <label>Структурное подразделение</label>
+          <select value={selectedDivision} onChange={(e) => setSelectedDivision(e.target.value)} required>
+            <option value="">Выберите подразделение</option>
+            {divisions.map(division => <option key={division} value={division}>{division}</option>)}
+          </select>
+        </div>
+        <div className="form-group">
+          <label>Участок</label>
+          <select value={selectedSector} onChange={(e) => setSelectedSector(e.target.value)} required>
+            <option value="">Выберите участок</option>
+            {sectors.map(sector => <option key={sector} value={sector}>{sector}</option>)}
+          </select>
+        </div>
+        <div className="form-group">
+          <label>Место</label>
+          <select value={selectedSection} onChange={(e) => setSelectedSection(e.target.value)} required>
+            <option value="">Выберите место</option>
+            {sections.map(section => <option key={section} value={section}>{section}</option>)}
+          </select>
+        </div>
+        <div className="form-group">
+          <label>Категория</label>
+          <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} required>
+            <option value="">Выберите категорию</option>
+            {categories.map(category => <option key={category} value={category}>{category}</option>)}
+          </select>
+        </div>
+        <div className="form-group">
+          <label>Критичность риска</label>
+          <div className="circle-group">
+            {['GREEN', 'YELLOW', 'ORANGE', 'RED', 'NONE'].map(level => (
+              <React.Fragment key={level}>
+                <input type="radio" id={`importance-${level}`} name="importance" value={level} checked={importance === level} onChange={() => setImportance(level)} />
+                <label htmlFor={`importance-${level}`} className="circle" style={{ backgroundColor: level === 'GREEN' ? 'green' : level === 'YELLOW' ? 'yellow' : level === 'ORANGE' ? 'orange' : level === 'RED' ? 'red' : 'gray' }}></label>
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+        <div className="form-group">
+          <label>Координаты</label>
+          <div className="location-input">
+            <input 
+              type="text" 
+              value={point} 
+              onChange={(e) => setPoint(e.target.value)} 
+              placeholder="Широта, Долгота" 
+            />
+            <FaMapMarkerAlt className="location-icon" onClick={handleGetLocation} />
+          </div>
+        </div>
+        <div className="form-group">
+          <label>Прикрепить файлы</label>
+          <input type="file" multiple onChange={handleFileChange} />
+          {files.length > 0 && (
+            <ul>
+              {files.map((file, index) => (
+                <li key={index}>{file.name}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="form-group">
+          <label>Отправить анонимно *</label>
+          <input type="checkbox" checked={isAnonymous} onChange={() => setIsAnonymous(!isAnonymous)} />
+        </div>
+        <button type="submit">Отправить</button>
+        <button type="button" onClick={onClose}>Закрыть</button>
+      </form>
+    </div>
+  );
+};
+
+export default RiskForm;
 
 import React, { useState } from 'react';
 import axios from 'axios';
@@ -186,49 +254,193 @@ function App() {
 
 export default App;
 
-{
-  "name": "my-app",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^6.4.5",
-    "@mui/material": "^6.4.5",
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.7.9",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-icons": "^5.5.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-  "start": "HTTPS=true react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+.risk-form {
+  padding: 20px;                         /* Внутренний отступ блока */
+  background-color: #f9f9f9;             /* Цвет фона формы */
+  border-radius: 8px;                    /* Скругление углов */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Тень вокруг элемента */
+  width: 80%;
+}
+  
+.risk-form h2 {
+  margin-bottom: 20px;                   /* Внешний отступ снизу заголовка */
+}
+  
+.form-group {
+  margin-bottom: 15px; /* Уменьшенный отступ */
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px; /* Уменьшенный отступ */
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px; /* Уменьшенный padding */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  box-sizing: border-box;
+  font-size: 12px; /* Уменьшенный размер шрифта */
+}
+
+.form-group textarea {
+  height: 80px; /* Уменьшенная высота текстовой области */
+  resize: vertical;
+}
+
+.form-group .radio-group {
+  display: flex;
+  align-items: center;
+}
+
+.form-group .radio-group label {
+  flex: 1;
+  padding: 10px 20px;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f4f4f4;
+  transition: background-color 0.3s, color 0.3s;
+  margin: 0;
+}
+
+.form-group .radio-group input[type="radio"] {
+  display: none;
+}
+
+.form-group .radio-group input[type="radio"]:checked + label {
+  background-color: #407b87; /* Цвет верхней панели */
+  color: white;
+  border-color: #407b87; /* Цвет верхней панели */
+}
+
+.form-group .radio-group label + label {
+  margin-left: -1px;
+}
+
+.form-group .radio-group label:first-of-type {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.form-group .radio-group label:last-of-type {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-group .required {
+  color: red;
+  font-size: 11px; /* Уменьшенный размер текста */
+  margin-top: 4px; /* Уменьшенный отступ */
+}
+
+.form-group .photo-upload {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px dashed #ccc;
+  padding: 8px; /* Уменьшенный padding */
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.form-group .photo-upload span {
+  color: #407b87;
+  font-weight: bold;
+  font-size: 12px; /* Уменьшенный размер шрифта */
+}
+  
+button {
+  margin-right: 10px;                    /* Отступ справа кнопки */
+  padding: 8px 16px;                     /* Внутренние отступы */
+  background-color: #407b87;             /* Синий фон кнопки */
+  color: white;                          /* Белый текст на кнопке */
+  border: none;                          /* Отсутствие рамки */
+  border-radius: 4px;                    /* Скруглённые углы кнопки */
+  cursor: pointer;                       /* Курсор в виде руки при наведении */
+}
+  
+button:hover {
+  background-color: #7dbfcc;             /* Изменение цвета фона при наведении */
+}
+
+.circle-group {
+  display: flex;
+  align-items: center;
+}
+
+.circle-group label.circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.circle-group input[type="radio"] {
+  display: none;
+}
+
+.circle-group label.circle.no-selection {
+  background-color: #ccc;
+  position: relative;
+}
+
+.circle-group label.circle.no-selection::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 2px;
+  background-color: #333;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.circle-group label.circle.no-selection::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 2px;
+  background-color: #333;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.circle-group input[type="radio"]:checked + label.circle {
+  transform: scale(1.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.location-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.location-input input {
+  width: 100%;
+  padding-right: 40px; /* Отступ для иконки */
+}
+
+.location-icon {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  color: #007bff;
+  font-size: 20px;
+  transition: color 0.2s;
+}
+
+.location-icon:hover {
+  color: #0056b3;
 }
 

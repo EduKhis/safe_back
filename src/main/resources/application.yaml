@@ -34,4 +34,4 @@ photo:
   url: \server\safe_back\src\main\resources\static\images
 
 cors:
-  origins: ${CORS:http://yourrisk.ru:3000}
+  origins: ${CORS:http://localhost:3000}

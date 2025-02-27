@@ -4,5 +4,6 @@ public enum Criticaly {
     RED,
     ORANGE,
     YELLOW,
-    GREEN
+    GREEN,
+    NONE
 }
