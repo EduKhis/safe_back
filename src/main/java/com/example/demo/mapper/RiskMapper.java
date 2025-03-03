@@ -3,6 +3,7 @@ package com.example.demo.mapper;
 import com.example.demo.dto.RiskContentDto;
 import com.example.demo.dto.RiskMapDto;
 import com.example.demo.entity.Risk;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
