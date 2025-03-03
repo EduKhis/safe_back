@@ -10,6 +10,7 @@ spring:
   web:
     resources:
       add-mappings: true
+      static-locations: file:/root/images/
   datasource:
  #   url: jdbc:mysql://127.0.0.1:3306/safety
     url: jdbc:mysql://217.114.3.39:3306/safety
