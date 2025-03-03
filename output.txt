@@ -1,204 +1,86 @@
-import React, { useState, useEffect } from 'react';
-import axios from "axios";
-import { FaMapMarkerAlt } from 'react-icons/fa'; // Импортируем иконку
-import '../styles/RiskForm.css';
+package com.example.demo.controller;
 
-const API_HOST = process.env.REACT_APP_API_HOST; // Вынесенный хост
+import com.example.demo.entity.Risk;
+import com.example.demo.service.RiskFormService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-const RiskForm = ({ onClose }) => {
-  const [type, setType] = useState('risk');
-  const [categories, setCategories] = useState([]);
-  const [divisions, setDivisions] = useState([]);
-  const [sectors, setSectors] = useState([]);
-  const [sections, setSections] = useState([]);
-  const [selectedDivision, setSelectedDivision] = useState('');
-  const [selectedSector, setSelectedSector] = useState('');
-  const [selectedSection, setSelectedSection] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [importance, setImportance] = useState('none');
-  const [files, setFiles] = useState([]);
-  const [description, setDescription] = useState('');
-  const [isAnonymous, setIsAnonymous] = useState(false);
-  const [point, setPoint] = useState('');
+import java.io.IOException;
+import java.util.List;
 
-  useEffect(() => {
-      fetch(`${API_HOST}/api/getCategories?type=${type}`)
-      .then(response => response.json())
-      .then(data => setCategories(data))
-      .catch(error => console.error('Ошибка загрузки категорий:', error));
-  }, [type]);
+@RestController
+@RequestMapping("/api")
+@CrossOrigin(origins = "${cors.origins}")
+@RequiredArgsConstructor
+public class RiskFormController {
 
-  useEffect(() => {
-      fetch(`${API_HOST}/api/getDivisions`)
-      .then(response => response.json())
-      .then(data => setDivisions(data))
-      .catch(error => console.error('Ошибка загрузки подразделений:', error));
-  }, []);
+    private final RiskFormService riskFormService;
 
-  useEffect(() => {
-    if (selectedDivision) {
-      fetch(`${API_HOST}/api/getSector?division=${selectedDivision}`)
-        .then(response => response.json())
-        .then(data => setSectors(data))
-        .catch(error => console.error('Ошибка загрузки участков:', error));
-    }
-  }, [selectedDivision]);
 
-  useEffect(() => {
-    if (selectedSector) {
-      fetch(`${API_HOST}/api/getSection?sector=${selectedSector}`)
-        .then(response => response.json())
-        .then(data => setSections(data))
-        .catch(error => console.error('Ошибка загрузки мест:', error));
-    }
-  }, [selectedSector]);
-
-  const handleFileChange = (event) => {
-    setFiles([...event.target.files]);
-  };
-
-  const handleGetLocation = () => {
-    if (!navigator.geolocation) {
-      alert("Ваш браузер не поддерживает геолокацию.");
-      return;
+    @GetMapping("/risks")
+    public List<Risk> getRisks() {
+        return riskFormService.getRisks();
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setPoint(`${latitude}, ${longitude}`);
-      },
-      (error) => {
-        console.error("Ошибка получения местоположения:", error);
-        alert("Не удалось получить местоположение.");
-      }
-    );
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('type', type);
-    formData.append('description', description);
-    formData.append('division', selectedDivision);
-    formData.append('sector', selectedSector);
-    formData.append('section', selectedSection)
-    formData.append('category', selectedCategory);
-    formData.append('importance', importance);
-    formData.append('isAnonymous', isAnonymous);
-    formData.append('point', point);
-
-    files.forEach((file) => {
-      formData.append('files', file);
-    });
-
-    try {
-      const response = await axios.post(`${API_HOST}/api/submitForm`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      if (response.status === 200) {
-        alert('Форма успешно отправлена');
-      } else {
-        alert('Ошибка при отправке формы');
-      }
-    } catch (error) {
-      console.error('Ошибка при отправке:', error);
-      alert('Ошибка при отправке формы');
+    @GetMapping("/getCategories")
+    public List<String> getCategories(@RequestParam(name = "type") String type) {
+        return riskFormService.getCategories(type);
     }
-  };
 
+    @GetMapping("/getDivisions")
+    public List<String> getDivisions() {
+        return riskFormService.getDivisions();
+    }
+
+    @GetMapping("/getSector")
+    public List<String> getSector(@RequestParam(name = "division") String division) {
+        return riskFormService.getSector(division);
+    }
+
+    @GetMapping("/getSection")
+    public List<String> getSection(@RequestParam(name = "sector") String sector) {
+        return riskFormService.getSection(sector);
+    }
+
+    @PostMapping(value = "/submitForm")
+    public String submitForm(
+            @RequestParam("type") String type, @RequestParam("description") String description,
+            @RequestParam("division") String division, @RequestParam("sector") String sector,
+            @RequestParam("category") String category, @RequestParam("importance") String importance,
+            @RequestParam("isAnonymous") Boolean isAnonymous, @RequestParam("section") String section,
+            @RequestParam("point") String point,
+            @RequestPart(value = "files", required = false) MultipartFile[] files) throws IOException {
+
+        riskFormService.createRisk(type, description, division, sector, category, importance, isAnonymous, section, point, files);
+        return "ok";
+    }
+
+
+}
+
+import React from 'react';
+import '../styles/Content.css';
+
+const Content = ({ risks, onShowRiskForm }) => {
   return (
-    <div className="risk-form">
-      <h2>Создать запись</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Риск или Идея?</label>
-          <div className="radio-group">
-            <input type="radio" id="risk" name="type" value="risk" checked={type === 'risk'} onChange={() => setType('risk')} />
-            <label htmlFor="risk">Риск</label>
-            <input type="radio" id="idea" name="type" value="idea" checked={type === 'idea'} onChange={() => setType('idea')} />
-            <label htmlFor="idea">Идея</label>
+    <div className="content">
+      {risks.map((risk, index) => (
+        <div key={index} className="card">
+          <div className="card-header">
+            <span className="card-date">{risk.description}</span>
+            <span className="card-status">{risk.status}</span>
           </div>
+          <h3>{risk.type}</h3>
+          <p>{risk.type}</p>
+          {/* <button onClick={onShowRiskForm}>Перейти</button> */}
         </div>
-        <div className="form-group">
-          <label>Описание *</label>
-          <textarea rows="4" required value={description} onChange={(e) => setDescription(e.target.value)} />
-        </div>
-        <div className="form-group">
-          <label>Структурное подразделение</label>
-          <select value={selectedDivision} onChange={(e) => setSelectedDivision(e.target.value)} required>
-            <option value="">Выберите подразделение</option>
-            {divisions.map(division => <option key={division} value={division}>{division}</option>)}
-          </select>
-        </div>
-        <div className="form-group">
-          <label>Участок</label>
-          <select value={selectedSector} onChange={(e) => setSelectedSector(e.target.value)} required>
-            <option value="">Выберите участок</option>
-            {sectors.map(sector => <option key={sector} value={sector}>{sector}</option>)}
-          </select>
-        </div>
-        <div className="form-group">
-          <label>Место</label>
-          <select value={selectedSection} onChange={(e) => setSelectedSection(e.target.value)} required>
-            <option value="">Выберите место</option>
-            {sections.map(section => <option key={section} value={section}>{section}</option>)}
-          </select>
-        </div>
-        <div className="form-group">
-          <label>Категория</label>
-          <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} required>
-            <option value="">Выберите категорию</option>
-            {categories.map(category => <option key={category} value={category}>{category}</option>)}
-          </select>
-        </div>
-        <div className="form-group">
-          <label>Критичность риска</label>
-          <div className="circle-group">
-            {['GREEN', 'YELLOW', 'ORANGE', 'RED', 'NONE'].map(level => (
-              <React.Fragment key={level}>
-                <input type="radio" id={`importance-${level}`} name="importance" value={level} checked={importance === level} onChange={() => setImportance(level)} />
-                <label htmlFor={`importance-${level}`} className="circle" style={{ backgroundColor: level === 'GREEN' ? 'green' : level === 'YELLOW' ? 'yellow' : level === 'ORANGE' ? 'orange' : level === 'RED' ? 'red' : 'gray' }}></label>
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-        <div className="form-group">
-          <label>Координаты</label>
-          <div className="location-input">
-            <input 
-              type="text" 
-              value={point} 
-              onChange={(e) => setPoint(e.target.value)} 
-              placeholder="Широта, Долгота" 
-            />
-            <FaMapMarkerAlt className="location-icon" onClick={handleGetLocation} />
-          </div>
-        </div>
-        <div className="form-group">
-          <label>Прикрепить файлы</label>
-          <input type="file" multiple onChange={handleFileChange} />
-          {files.length > 0 && (
-            <ul>
-              {files.map((file, index) => (
-                <li key={index}>{file.name}</li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div className="form-group">
-          <label>Отправить анонимно *</label>
-          <input type="checkbox" checked={isAnonymous} onChange={() => setIsAnonymous(!isAnonymous)} />
-        </div>
-        <button type="submit">Отправить</button>
-        <button type="button" onClick={onClose}>Закрыть</button>
-      </form>
+      ))}
     </div>
   );
 };
 
-export default RiskForm;
+export default Content;
 
 import React, { useState } from 'react';
 import axios from 'axios';
@@ -254,193 +136,52 @@ function App() {
 
 export default App;
 
-.risk-form {
-  padding: 20px;                         /* Внутренний отступ блока */
-  background-color: #f9f9f9;             /* Цвет фона формы */
-  border-radius: 8px;                    /* Скругление углов */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Тень вокруг элемента */
-  width: 80%;
-}
-  
-.risk-form h2 {
-  margin-bottom: 20px;                   /* Внешний отступ снизу заголовка */
-}
-  
-.form-group {
-  margin-bottom: 15px; /* Уменьшенный отступ */
-}
+/* Основной контейнер контента */
 
-.form-group label {
-  display: block;
-  margin-bottom: 4px; /* Уменьшенный отступ */
-  font-weight: bold;
-}
 
-.form-group input[type="text"],
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 8px; /* Уменьшенный padding */
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  outline: none;
-  box-sizing: border-box;
-  font-size: 12px; /* Уменьшенный размер шрифта */
-}
-
-.form-group textarea {
-  height: 80px; /* Уменьшенная высота текстовой области */
-  resize: vertical;
-}
-
-.form-group .radio-group {
+.content {
+  flex-grow: 1; /* Растягиваем контент на всю доступную высоту */
+  width: 100%; /* Заполняем доступную ширину */
+  overflow-y: auto; /* Разрешаем вертикальную прокрутку при необходимости */
+  padding: 20px;
+  background-color: #ecf0f1;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  height: calc(100vh - 60px); /* 100% высоты экрана минус хедер */
 }
 
-.form-group .radio-group label {
-  flex: 1;
-  padding: 10px 20px;
-  text-align: center;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f4f4f4;
-  transition: background-color 0.3s, color 0.3s;
-  margin: 0;
+/* Карточка */
+.card {
+  background-color: white; /* Белый фон */
+  padding: 15px; /* Внутренние отступы */
+  margin-bottom: 10px; /* Отступ между карточками */
+  border-radius: 5px; /* Закругленные углы */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Тень для эффекта поднятия */
 }
 
-.form-group .radio-group input[type="radio"] {
-  display: none;
+/* Заголовок карточки */
+.card-header {
+  display: flex; /* Используем flexbox */
+  justify-content: space-between; /* Размещаем элементы по краям */
+  margin-bottom: 10px; /* Отступ снизу */
+  font-size: 0.9em; /* Размер шрифта */
+  color: #7f8c8d; /* Серый цвет текста */
 }
 
-.form-group .radio-group input[type="radio"]:checked + label {
-  background-color: #407b87; /* Цвет верхней панели */
-  color: white;
-  border-color: #407b87; /* Цвет верхней панели */
+/* Статус карточки */
+.card-status {
+  color: #27ae60; /* Зеленый цвет для статуса */
 }
 
-.form-group .radio-group label + label {
-  margin-left: -1px;
+/* Заголовок внутри карточки */
+.card h3 {
+  margin-top: 0; /* Убираем верхний отступ */
+  color: #2c3e50; /* Темный цвет текста */
 }
 
-.form-group .radio-group label:first-of-type {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.form-group .radio-group label:last-of-type {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.form-group .required {
-  color: red;
-  font-size: 11px; /* Уменьшенный размер текста */
-  margin-top: 4px; /* Уменьшенный отступ */
-}
-
-.form-group .photo-upload {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px dashed #ccc;
-  padding: 8px; /* Уменьшенный padding */
-  border-radius: 5px;
-  background-color: #f9f9f9;
-  cursor: pointer;
-}
-
-.form-group .photo-upload span {
-  color: #407b87;
-  font-weight: bold;
-  font-size: 12px; /* Уменьшенный размер шрифта */
-}
-  
-button {
-  margin-right: 10px;                    /* Отступ справа кнопки */
-  padding: 8px 16px;                     /* Внутренние отступы */
-  background-color: #407b87;             /* Синий фон кнопки */
-  color: white;                          /* Белый текст на кнопке */
-  border: none;                          /* Отсутствие рамки */
-  border-radius: 4px;                    /* Скруглённые углы кнопки */
-  cursor: pointer;                       /* Курсор в виде руки при наведении */
-}
-  
-button:hover {
-  background-color: #7dbfcc;             /* Изменение цвета фона при наведении */
-}
-
-.circle-group {
-  display: flex;
-  align-items: center;
-}
-
-.circle-group label.circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 10px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.circle-group input[type="radio"] {
-  display: none;
-}
-
-.circle-group label.circle.no-selection {
-  background-color: #ccc;
-  position: relative;
-}
-
-.circle-group label.circle.no-selection::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  height: 2px;
-  background-color: #333;
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.circle-group label.circle.no-selection::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  height: 2px;
-  background-color: #333;
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-.circle-group input[type="radio"]:checked + label.circle {
-  transform: scale(1.2);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-.location-input {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.location-input input {
-  width: 100%;
-  padding-right: 40px; /* Отступ для иконки */
-}
-
-.location-icon {
-  position: absolute;
-  right: 10px;
-  cursor: pointer;
-  color: #007bff;
-  font-size: 20px;
-  transition: color 0.2s;
-}
-
-.location-icon:hover {
-  color: #0056b3;
+/* Обычный текст в карточке */
+.card p {
+  margin: 5px 0; /* Отступы сверху и снизу */
+  color: #34495e; /* Темно-серый цвет текста */
 }
 

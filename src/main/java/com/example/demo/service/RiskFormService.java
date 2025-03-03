@@ -1,17 +1,14 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.Criticaly;
-import com.example.demo.dto.MapPoint;
-import com.example.demo.dto.Status;
-import com.example.demo.dto.Type;
+import com.example.demo.dto.*;
 import com.example.demo.entity.Location;
 import com.example.demo.entity.Risk;
+import com.example.demo.mapper.RiskMapper;
 import com.example.demo.repository.LocationRepository;
 import com.example.demo.repository.RiskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -35,6 +32,7 @@ public class RiskFormService {
 
     private final LocationRepository locationRepository;
     private final RiskRepository riskRepository;
+    private final RiskMapper riskMapper;
 
 
     public List<String> getCategories(String type) {
@@ -43,9 +41,9 @@ public class RiskFormService {
         return categoryEf;
     }
 
-    public List<Risk> getRisks() {
-        System.out.println(url);
-        return riskRepository.findAll();
+    public List<RiskContentDto> getRisks() {
+        List<Risk> risks = riskRepository.findAll();
+        return riskMapper.riskToRiskContent(risks);
     }
 
     public List<String> getDivisions() {
@@ -104,8 +102,7 @@ public class RiskFormService {
         try {
             String[] split = point.split(", ");
             return new MapPoint(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("неполучилось распарсить " + point);
             return new MapPoint();
         }

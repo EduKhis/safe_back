@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.RiskContentDto;
 import com.example.demo.entity.Risk;
 import com.example.demo.service.RiskFormService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class RiskFormController {
 
 
     @GetMapping("/risks")
-    public List<Risk> getRisks() {
+    public List<RiskContentDto> getRisks() {
         return riskFormService.getRisks();
     }
 
