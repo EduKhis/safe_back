@@ -13,6 +13,9 @@ import java.util.List;
 @Component
 public class RiskMapper {
 
+    @Value("${photo.url}")
+    private String url;
+
     public List<RiskMapDto> riskToRiskMap(List<Risk> risksR) {
         List<RiskMapDto> risks = new ArrayList<>();
         for (Risk risk : risksR) {
@@ -40,7 +43,7 @@ public class RiskMapper {
         for (Risk risk : risksR) {
             System.out.println(risk.getPhotosList().isEmpty() ? null : risk.getPhotosList().get(0));
             risks.add(RiskContentDto.builder()
-                    .photo(risk.getPhotosList().isEmpty() ? null : risk.getPhotosList().get(0))
+                    .photo(risk.getPhotosList().isEmpty() ? null : url + "\\" + risk.getPhotosList().get(0))
                     .id(risk.getId())
                     .criticaly(risk.getCriticaly().name())
                     .dateTimeFix(dateFormat(risk.getDateTimeFix()))
