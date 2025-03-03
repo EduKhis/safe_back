@@ -90,7 +90,7 @@ public class RiskFormService {
                 String fileName = file.getOriginalFilename();
                 fileList.add(fileName);
 
-                String filePath = url + "\\" + fileName;
+                String filePath = url + "/" + fileName;
                 System.out.println(filePath);
                 File dest = new File(filePath);
                 file.transferTo(dest);
