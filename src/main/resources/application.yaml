@@ -32,7 +32,9 @@ category:
 
 photo:
 #  url: C:\Users\e.khisamutdinov\IdeaProjects\demo\src\main\resources\static\images
-  url: /root/client/safe_front/public/images/
+  url:
+    load: /root/client/safe_front/public/images
+    upload: /images
 
 cors:
   origins: ${CORS:http://yourrisk.ru:3000}

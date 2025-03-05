@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class RiskMapper {
 
-    @Value("${photo.url}")
+    @Value("${photo.url.upload}")
     private String url;
 
     public List<RiskMapDto> riskToRiskMap(List<Risk> risksR) {

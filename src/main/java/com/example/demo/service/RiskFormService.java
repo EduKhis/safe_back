@@ -27,7 +27,7 @@ public class RiskFormService {
     @Value("${category.ef}")
     private List<String> categoryEf;
 
-    @Value("${photo.url}")
+    @Value("${photo.url.load}")
     private String url;
 
     private final LocationRepository locationRepository;
