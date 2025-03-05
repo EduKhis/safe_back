@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api")
 @CrossOrigin(origins = "${cors.origins}")
 @RequiredArgsConstructor
-public class RiskFormController {
+public class RiskController {
 
     private final RiskFormService riskFormService;
 
@@ -22,6 +22,11 @@ public class RiskFormController {
     @GetMapping("/risks")
     public List<RiskContentDto> getRisks() {
         return riskFormService.getRisks();
+    }
+
+    @GetMapping("/risks/{riskId}")
+    public Risk getRiskById(@PathVariable Integer riskId) {
+        return riskFormService.getRiskById(riskId);
     }
 
     @GetMapping("/getCategories")

@@ -41,6 +41,11 @@ public class RiskFormService {
         return categoryEf;
     }
 
+    public Risk getRiskById(Integer id) {
+        Risk risk  = riskRepository.findById(id).get();
+        return risk;
+    }
+
     public List<RiskContentDto> getRisks() {
         List<Risk> risks = riskRepository.findAll();
         return riskMapper.riskToRiskContent(risks);
