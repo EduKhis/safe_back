@@ -29,7 +29,7 @@ public class RiskMapper {
                     .location(risk.getLocation().getSector())
                     .locationAll(risk.getLocation())
                     .dateTimeFix(dateFormat(risk.getDateTimeFix()))
-                    .photo("milk1.jpg")
+                    .photo(risk.getPhotosList().isEmpty() ? null : url + risk.getPhotosList().get(0))
                     .type(risk.getType().getDisplayName())
                     .latitude(risk.getMapPoint().getLatitude())
                     .longitude(risk.getMapPoint().getLongitude())
@@ -44,7 +44,7 @@ public class RiskMapper {
         for (Risk risk : risksR) {
             System.out.println(risk.getPhotosList().isEmpty() ? null : risk.getPhotosList().get(0));
             risks.add(RiskContentDto.builder()
-                    .photo(risk.getPhotosList().isEmpty() ? null : url + "/" + risk.getPhotosList().get(0))
+                    .photo(risk.getPhotosList().isEmpty() ? null : url + risk.getPhotosList().get(0))
                     .id(risk.getId())
                     .criticaly(risk.getCriticaly().name())
                     .dateTimeFix(dateFormat(risk.getDateTimeFix()))
