@@ -1,79 +1,40 @@
-package com.example.demo.controller;
-
-import com.example.demo.entity.Risk;
-import com.example.demo.service.RiskFormService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
-
-@RestController
-@RequestMapping("/api")
-@CrossOrigin(origins = "${cors.origins}")
-@RequiredArgsConstructor
-public class RiskFormController {
-
-    private final RiskFormService riskFormService;
-
-
-    @GetMapping("/risks")
-    public List<Risk> getRisks() {
-        return riskFormService.getRisks();
-    }
-
-    @GetMapping("/getCategories")
-    public List<String> getCategories(@RequestParam(name = "type") String type) {
-        return riskFormService.getCategories(type);
-    }
-
-    @GetMapping("/getDivisions")
-    public List<String> getDivisions() {
-        return riskFormService.getDivisions();
-    }
-
-    @GetMapping("/getSector")
-    public List<String> getSector(@RequestParam(name = "division") String division) {
-        return riskFormService.getSector(division);
-    }
-
-    @GetMapping("/getSection")
-    public List<String> getSection(@RequestParam(name = "sector") String sector) {
-        return riskFormService.getSection(sector);
-    }
-
-    @PostMapping(value = "/submitForm")
-    public String submitForm(
-            @RequestParam("type") String type, @RequestParam("description") String description,
-            @RequestParam("division") String division, @RequestParam("sector") String sector,
-            @RequestParam("category") String category, @RequestParam("importance") String importance,
-            @RequestParam("isAnonymous") Boolean isAnonymous, @RequestParam("section") String section,
-            @RequestParam("point") String point,
-            @RequestPart(value = "files", required = false) MultipartFile[] files) throws IOException {
-
-        riskFormService.createRisk(type, description, division, sector, category, importance, isAnonymous, section, point, files);
-        return "ok";
-    }
-
-
-}
-
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Content.css';
 
-const Content = ({ risks, onShowRiskForm }) => {
+const Content = ({ risks }) => {
+  const navigate = useNavigate();
+
+  if (!risks || !Array.isArray(risks)) {
+    return <div>Нет данных</div>;
+  }
+
   return (
-    <div className="content">
+    <div className="content-grid">
       {risks.map((risk, index) => (
-        <div key={index} className="card">
-          <div className="card-header">
-            <span className="card-date">{risk.description}</span>
-            <span className="card-status">{risk.status}</span>
+        <div
+          key={index}
+          className="card-grid"
+          onClick={() => navigate(`/risks/${risk.id}`)} // Переход на страницу риска
+        >
+          <div className="card-header-grid">
+            <img src={risk.photo} alt="risk" className="risk-photo" />
+            <div className="risk-info">
+              <span className="card-critical-wrapper">
+                <span className={`card-critical ${risk.criticaly?.toLowerCase() || 'gray'}`}></span>
+                <span className="card-number">{risk.type} {risk.id}</span>
+              </span>
+              <span className="card-date">{risk.dateTimeFix}</span>
+            </div>
           </div>
-          <h3>{risk.type}</h3>
-          <p>{risk.type}</p>
-          {/* <button onClick={onShowRiskForm}>Перейти</button> */}
+
+          <div className="card-middle-grid">
+            <span className="card-category">{risk.category}</span>
+            <span className="card-sector-section">{risk.sector}. {risk.section}</span>
+          </div>
+          <div className="card-description-grid">
+            <p>{risk.description}</p>
+          </div>
         </div>
       ))}
     </div>
@@ -82,24 +43,76 @@ const Content = ({ risks, onShowRiskForm }) => {
 
 export default Content;
 
-import React, { useState } from 'react';
+import React from 'react';
+import Content from './Content';
+import MapComponent from './MapComponent';
+import RiskForm from './RiskForm';
+import SectionHeader from './SectionHeader'; // Импортируем SectionHeader
+import '../styles/MainContent.css';
+
+const MainContent = ({ selectedSection, risks, showRiskForm, setShowRiskForm }) => {
+  return (
+    <div className="main-content">
+      <div className="section-header-wrapper">
+        <SectionHeader selectedSection={selectedSection} onShowRiskForm={() => setShowRiskForm(true)} />
+      </div>
+      <div className="main-content-area">
+        {selectedSection === 'risks-ideas' && (
+          showRiskForm ? (
+            <RiskForm onClose={() => setShowRiskForm(false)} />
+          ) : (
+            <Content risks={risks} />
+          )
+        )}
+        {selectedSection === 'map' && <MapComponent />}
+        {selectedSection === 'tasks' && <div>Раздел "Задачи"</div>}
+        {selectedSection === 'my-tasks' && <div>Раздел "Мои задачи"</div>}
+        {selectedSection === 'profile' && <div>Раздел "Мой профиль"</div>}
+        {selectedSection === 'stats' && <div>Раздел "Статистика"</div>}
+        {selectedSection === 'places' && <div>Раздел "Места"</div>}
+      </div>
+    </div>
+  );
+};
+
+export default MainContent;
+
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import TopMenu from './components/TopMenu';
 import Sidebar from './components/Sidebar';
-import SectionHeader from './components/SectionHeader';
 import MainContent from './components/MainContent';
+import RiskDetail from './components/RiskDetail'; // Импортируем новый компонент
+import RiskForm from './components/RiskForm'; // Импортируем RiskForm
 import './styles/App.css';
 
-const API_HOST = process.env.REACT_APP_API_HOST; // Вынесенный хост
+const API_HOST = process.env.REACT_APP_API_HOST;
 
 function App() {
   const [risks, setRisks] = useState([]);
-  const [selectedSection, setSelectedSection] = useState(null);
+  const [selectedSection, setSelectedSection] = useState('risks-ideas');
   const [showRiskForm, setShowRiskForm] = useState(false);
-  const [collapsed, setCollapsed] = useState(false); // Только collapsed
+  const [collapsed, setCollapsed] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (selectedSection === 'risks-ideas') {
+      axios.get(`${API_HOST}/api/risks`)
+        .then(response => setRisks(response.data))
+        .catch(error => console.error(error));
+    }
+  }, [selectedSection]);
 
   const handleSidebarSelect = (selectedItem) => {
-    console.log(`Выбран раздел: ${selectedItem}`);
     setSelectedSection(selectedItem);
     setShowRiskForm(false);
 
@@ -110,78 +123,42 @@ function App() {
     } else {
       setRisks([]);
     }
+    setCollapsed(true);
   };
 
   const toggleSidebar = () => {
-    setCollapsed(!collapsed); // Переключаем только collapsed
+    setCollapsed(!collapsed);
   };
 
-  const handleShowRiskForm = () => {
-    setShowRiskForm(true);
-  };
 
   return (
-    <div className="app">
-      <TopMenu onToggleSidebar={toggleSidebar} />
-      <div className="main-container">
-        <Sidebar onSelect={handleSidebarSelect} collapsed={collapsed} />
-        <div className="main-content">
-          <SectionHeader selectedSection={selectedSection} onShowRiskForm={handleShowRiskForm} />
-          <MainContent selectedSection={selectedSection} risks={risks} showRiskForm={showRiskForm} setShowRiskForm={setShowRiskForm} />
+    <Router>
+      <div className="app">
+        <TopMenu onToggleSidebar={toggleSidebar} />
+        <div className="main-container">
+          <Sidebar onSelect={handleSidebarSelect} collapsed={collapsed} isMobile={isMobile} />
+          <div className={`main-content ${collapsed ? '' : 'shifted'}`}>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <MainContent
+                    selectedSection={selectedSection}
+                    risks={risks}
+                    showRiskForm={showRiskForm}
+                    setShowRiskForm={setShowRiskForm}
+                  />
+                }
+              />
+              <Route path="/risks/:riskId" element={<RiskDetail />} /> {/* Маршрут для страницы риска */}
+              <Route path="/risks/new" element={<RiskForm onClose={() => setShowRiskForm(false)} />} /> {/* Маршрут для формы добавления риска */}
+            </Routes>
+          </div>
         </div>
       </div>
-    </div>
+    </Router>
   );
 }
 
 export default App;
-
-/* Основной контейнер контента */
-
-
-.content {
-  flex-grow: 1; /* Растягиваем контент на всю доступную высоту */
-  width: 100%; /* Заполняем доступную ширину */
-  overflow-y: auto; /* Разрешаем вертикальную прокрутку при необходимости */
-  padding: 20px;
-  background-color: #ecf0f1;
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 60px); /* 100% высоты экрана минус хедер */
-}
-
-/* Карточка */
-.card {
-  background-color: white; /* Белый фон */
-  padding: 15px; /* Внутренние отступы */
-  margin-bottom: 10px; /* Отступ между карточками */
-  border-radius: 5px; /* Закругленные углы */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Тень для эффекта поднятия */
-}
-
-/* Заголовок карточки */
-.card-header {
-  display: flex; /* Используем flexbox */
-  justify-content: space-between; /* Размещаем элементы по краям */
-  margin-bottom: 10px; /* Отступ снизу */
-  font-size: 0.9em; /* Размер шрифта */
-  color: #7f8c8d; /* Серый цвет текста */
-}
-
-/* Статус карточки */
-.card-status {
-  color: #27ae60; /* Зеленый цвет для статуса */
-}
-
-/* Заголовок внутри карточки */
-.card h3 {
-  margin-top: 0; /* Убираем верхний отступ */
-  color: #2c3e50; /* Темный цвет текста */
-}
-
-/* Обычный текст в карточке */
-.card p {
-  margin: 5px 0; /* Отступы сверху и снизу */
-  color: #34495e; /* Темно-серый цвет текста */
-}
 

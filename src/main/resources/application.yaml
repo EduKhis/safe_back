@@ -33,19 +33,21 @@ category:
 photo:
 #  url: C:\Users\e.khisamutdinov\IdeaProjects\demo\src\main\resources\static\images
   url:
+#    load: C:\Users\e.khisamutdinov\IdeaProjects\demo\src\main\resources\static\images/
+#    upload: C:\Users\e.khisamutdinov\IdeaProjects\demo\src\main\resources\static\images/
     load: /root/client/safe_front/public/images/
     upload: /images/
 
 cors:
-  origins: ${CORS:http://yourrisk.ru:3000}
- # origins: ${CORS:http://localhost:3000}
+  origins: ${CORS:https://yourrisk.ru}
+#  origins: ${CORS:http://localhost:3000}
 
 
 #авторизация аутентификация
 #страница риска
-#
-#
-#
+#https nginx
+#хранение фото на сервере не в папке с проектом
+#валидация полей при создании риска
 #
 #
 

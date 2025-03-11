@@ -12,21 +12,21 @@ public class FileAggregator {
   //          "C:\\Users\\e.khisamutdinov\\IdeaProjects\\safety_back\\src\\main\\java\\com\\example\\demo\\controller\\RiskFormController.java",
 
             "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\Content.jsx",
- //           "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\MainContent.jsx",
+            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\MainContent.jsx",
 //            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\MapComponent.jsx",
-            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\RiskForm.jsx",
-//            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\SectionHeader.jsx",
+ //           "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\RiskForm.jsx",
+  //          "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\SectionHeader.jsx",
  //           "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\Sidebar.jsx",
  //           "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\TopMenu.jsx",
 
             "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\App.js",
 
-            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\App.css",
-            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\Content.css",
+  //          "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\App.css",
+  //          "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\Content.css",
   //          "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\MainContent.css",
 //            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\MapComponent.css",
-            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\RiskForm.css",
-//            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\SectionHeader.css",
+  //          "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\RiskForm.css",
+ //           "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\SectionHeader.css",
  //           "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\Sidebar.css",
 //            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\TopMenu.css",
 
