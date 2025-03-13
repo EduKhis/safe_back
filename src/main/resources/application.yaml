@@ -39,7 +39,7 @@ photo:
     upload: /images/
 
 cors:
-  origins: ${CORS:https://yourrisk.ru}
+  origins: ${CORS:http://yourrisk.ru}
 #  origins: ${CORS:http://localhost:3000}
 
 
