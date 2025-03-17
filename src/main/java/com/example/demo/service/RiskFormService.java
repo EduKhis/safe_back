@@ -7,6 +7,7 @@ import com.example.demo.mapper.RiskMapper;
 import com.example.demo.repository.LocationRepository;
 import com.example.demo.repository.RiskRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,8 +83,6 @@ public class RiskFormService {
         risk.setStatus(Status.POSTED);
         risk.setDateTimeFix(LocalDateTime.now());
 
-        System.out.println(risk.toString());
-
         riskRepository.save(risk);
     }
 
@@ -106,6 +105,9 @@ public class RiskFormService {
 
     private MapPoint getMapPoint(String point) {
         try {
+            if (Strings.isBlank(point)) {
+                return new MapPoint();
+            }
             String[] split = point.split(", ");
             return new MapPoint(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
         } catch (Exception e) {

@@ -8,12 +8,10 @@ import com.example.demo.entity.*;
 import com.example.demo.repository.*;
 import com.example.demo.util.FileAggregator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,9 +57,9 @@ public class InitController {
         Location location16 = locationRepository.save(new Location("БГРЭС", "БГРЭС - 3", "Административно-бытовой участок"));
         Location location17 = locationRepository.save(new Location("Комбинат", "Участок заготовки", "Станок шлифовальный"));
 
-        User user = userRepository.save(new User("danilenko.q@gmail.com", "1111", List.of(Role.USER)));
-        User user1 = userRepository.save(new User("hisA.q@gmail.com", "1111", List.of(Role.USER, Role.ADMIN)));
-        User user2 = userRepository.save(new User("hisE.q@gmail.com", "1111", List.of(Role.USER, Role.ADMIN)));
+        User user = userRepository.save(new User("danilenko.q@gmail.com", "danilenko.q@gmail.com", "List.of(ERole.USER)"));
+        User user1 = userRepository.save(new User("hisA.q@gmail.com", "hisA@gmail.com", "List.of(ERole.USER, ERole.ADMIN)"));
+        User user2 = userRepository.save(new User("hisE.q@gmail.com", "hisE@gmail.com", "List.of(ERole.USER, ERole.ADMIN)"));
 
         MapPoint mapPoint = mapPointRepository.save(new MapPoint(41.315467, 69.240471));
         MapPoint mapPoint2 = mapPointRepository.save(new MapPoint(42.315467, 69.240471));

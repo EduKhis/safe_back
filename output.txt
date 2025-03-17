@@ -1,3 +1,44 @@
+package com.example.demo.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.List;
+
+@Entity
+@Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String username;
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Role> ERole;
+
+    public User(String username, String password, List<Role> ERole) {
+        this.username = username;
+        this.password = password;
+        this.ERole = ERole;
+    }
+}
+
+
+package com.example.demo.entity;
+
+public enum Role {
+    USER,
+    ADMIN
+}
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Content.css';
@@ -15,7 +56,7 @@ const Content = ({ risks }) => {
         <div
           key={index}
           className="card-grid"
-          onClick={() => navigate(`/risks/${risk.id}`)} // Переход на страницу риска
+          onClick={() => navigate(`/risks/${risk.id}`)}
         >
           <div className="card-header-grid">
             <img src={risk.photo} alt="risk" className="risk-photo" />
@@ -27,7 +68,6 @@ const Content = ({ risks }) => {
               <span className="card-date">{risk.dateTimeFix}</span>
             </div>
           </div>
-
           <div className="card-middle-grid">
             <span className="card-category">{risk.category}</span>
             <span className="card-sector-section">{risk.sector}. {risk.section}</span>
@@ -47,7 +87,7 @@ import React from 'react';
 import Content from './Content';
 import MapComponent from './MapComponent';
 import RiskForm from './RiskForm';
-import SectionHeader from './SectionHeader'; // Импортируем SectionHeader
+import SectionHeader from './SectionHeader';
 import '../styles/MainContent.css';
 
 const MainContent = ({ selectedSection, risks, showRiskForm, setShowRiskForm }) => {
@@ -58,11 +98,7 @@ const MainContent = ({ selectedSection, risks, showRiskForm, setShowRiskForm }) 
       </div>
       <div className="main-content-area">
         {selectedSection === 'risks-ideas' && (
-          showRiskForm ? (
-            <RiskForm onClose={() => setShowRiskForm(false)} />
-          ) : (
-            <Content risks={risks} />
-          )
+          showRiskForm ? <RiskForm onClose={() => setShowRiskForm(false)} /> : <Content risks={risks} />
         )}
         {selectedSection === 'map' && <MapComponent />}
         {selectedSection === 'tasks' && <div>Раздел "Задачи"</div>}
@@ -77,14 +113,40 @@ const MainContent = ({ selectedSection, risks, showRiskForm, setShowRiskForm }) 
 
 export default MainContent;
 
+import React from 'react';
+import '../styles/TopMenu.css'; // Правильный путь к файлу стилей
+
+
+
+const TopMenu = ({ onToggleSidebar }) => {
+  return (
+    <div className="top-menu">
+      <div className="left-section">
+        <button className="hide-sidebar-button" onClick={onToggleSidebar}>
+          ☰
+        </button>
+        <span className="safety-label">Safety</span>
+      </div>
+      <div className="center-section">
+        <input type="text" placeholder="Поиск..." className="search-input" />
+      </div>
+      <div className="right-section">
+        {/* Здесь можно добавить другие элементы, например, иконки или кнопки */}
+      </div>
+    </div>
+  );
+};
+
+export default TopMenu;
+
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom'; // Убираем BrowserRouter
 import axios from 'axios';
 import TopMenu from './components/TopMenu';
 import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
-import RiskDetail from './components/RiskDetail'; // Импортируем новый компонент
-import RiskForm from './components/RiskForm'; // Импортируем RiskForm
+import RiskDetail from './components/RiskDetail';
+//import RiskForm from './components/RiskForm';
 import './styles/App.css';
 
 const API_HOST = process.env.REACT_APP_API_HOST;
@@ -95,6 +157,7 @@ function App() {
   const [showRiskForm, setShowRiskForm] = useState(false);
   const [collapsed, setCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const location = useLocation();
 
   useEffect(() => {
     const handleResize = () => {
@@ -111,6 +174,12 @@ function App() {
         .catch(error => console.error(error));
     }
   }, [selectedSection]);
+
+  useEffect(() => {
+    if (location.pathname.startsWith('/risks/')) {
+      setSelectedSection('risk-detail');
+    }
+  }, [location.pathname]);
 
   const handleSidebarSelect = (selectedItem) => {
     setSelectedSection(selectedItem);
@@ -130,35 +199,80 @@ function App() {
     setCollapsed(!collapsed);
   };
 
-
   return (
-    <Router>
-      <div className="app">
-        <TopMenu onToggleSidebar={toggleSidebar} />
-        <div className="main-container">
-          <Sidebar onSelect={handleSidebarSelect} collapsed={collapsed} isMobile={isMobile} />
-          <div className={`main-content ${collapsed ? '' : 'shifted'}`}>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <MainContent
-                    selectedSection={selectedSection}
-                    risks={risks}
-                    showRiskForm={showRiskForm}
-                    setShowRiskForm={setShowRiskForm}
-                  />
-                }
-              />
-              <Route path="/risks/:riskId" element={<RiskDetail />} /> {/* Маршрут для страницы риска */}
-              <Route path="/risks/new" element={<RiskForm onClose={() => setShowRiskForm(false)} />} /> {/* Маршрут для формы добавления риска */}
-            </Routes>
-          </div>
+    <div className="app">
+      <TopMenu onToggleSidebar={toggleSidebar} />
+      <div className="main-container">
+        <Sidebar onSelect={handleSidebarSelect} collapsed={collapsed} isMobile={isMobile} />
+        <div className={`main-content ${collapsed ? '' : 'shifted'}`}>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <MainContent
+                  selectedSection={selectedSection}
+                  risks={risks}
+                  showRiskForm={showRiskForm}
+                  setShowRiskForm={setShowRiskForm}
+                />
+              }
+            />
+            <Route path="/risks/:riskId" element={<RiskDetail />} />
+           
+            {/* <Route path="/risks/new" element={<RiskForm onClose={() => setShowRiskForm(false)} />} /> */}
+          </Routes>
         </div>
       </div>
-    </Router>
+    </div>
   );
 }
 
 export default App;
+
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.4.5",
+    "@mui/material": "^6.4.5",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.9",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^6.30.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
 
