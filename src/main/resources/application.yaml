@@ -43,6 +43,13 @@ cors:
 #  origins: ${CORS:http://localhost:3000}
 
 
+bezkoder:
+  app:
+    jwtSecret: ======================BezKoder=Spring===========================
+    jwtExpirationMs: 86400000
+
+
+
 #авторизация аутентификация
 #страница риска
 #https nginx

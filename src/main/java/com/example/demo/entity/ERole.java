@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 public enum ERole {
-    USER,
-    ADMIN
+    ROLE_USER,
+    ROLE_MODERATOR,
+    ROLE_ADMIN
 }

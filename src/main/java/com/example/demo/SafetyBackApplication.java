@@ -16,7 +16,6 @@ public class SafetyBackApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SafetyBackApplication.class, args);
-        FileAggregator.text();
     }
 
 }
