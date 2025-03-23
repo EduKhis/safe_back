@@ -74,9 +74,6 @@ public class InitController {
     @GetMapping("/init")
     public String init() {
 
-        roleRepository.save(new Role(ERole.ROLE_USER));
-        roleRepository.save(new Role(ERole.ROLE_ADMIN));
-        roleRepository.save(new Role(ERole.ROLE_MODERATOR));
 
         Location location = locationRepository.save(new Location("ТУГРЭС", "ТУГРЭС - 1", "Литейный участок"));
         Location location1 = locationRepository.save(new Location("ТУГРЭС", "ТУГРЭС - 1", "Кузнечный участок"));
@@ -106,79 +103,79 @@ public class InitController {
         MapPoint mapPoint3 = mapPointRepository.save(new MapPoint(43.315467, 68.240471));
         MapPoint mapPoint4 = mapPointRepository.save(new MapPoint(41.315467, 67.240471));
 
-//        riskRepository.save(new Risk(
-//                1,
-//                "Риск получения тяжелой травмы при спуске с лестницы из-за несоответствия угла наклона лестницы (более 75 градусов).",
-//                Criticaly.GREEN,
-//                Status.IN_WORK,
-//                locationRepository.findById(1).get(),
-//                false,
-//                userRepository.findById(1L).get(),
-//                LocalDateTime.of(2023, 12, 11, 15, 11, 12),
-//                null,
-//                new ArrayList<>(),
-//                new ArrayList<>(),
-//                "Падение с высоты",
-//                Type.RISK,
-//                mapPointRepository.findById(1).get(),
-//                new ArrayList<>()
-//        ));
-//
-//        riskRepository.save(new Risk(
-//                2,
-//                "Риск получения тяжелой травмы при спуске с лестницы из-за несоответствия угла наклона лестницы (более 75 градусов).",
-//                Criticaly.ORANGE,
-//                Status.IN_WORK,
-//                locationRepository.findById(2).get(),
-//                false,
-//                userRepository.findById(2L).get(),
-//                LocalDateTime.of(2024, 12, 10, 15, 11, 12),
-//                null,
-//                new ArrayList<>(),
-//                new ArrayList<>(),
-//                "Падение с высоты",
-//                Type.RISK,
-//                mapPointRepository.findById(2).get(),
-//                new ArrayList<>()
-//        ));
-//
-//        riskRepository.save(new Risk(
-//                3,
-//                "Риск получения травмы при переносе тяжелых грузов вручную, из-за недостатка механических средств для транспортировки и неправильной осанки при поднятии грузов.",
-//                Criticaly.GREEN,
-//                Status.IN_WORK,
-//                locationRepository.findById(3).get(),
-//                false,
-//                userRepository.findById(3L).get(),
-//                LocalDateTime.of(2023, 12, 11, 15, 11, 12),
-//                null,
-//                new ArrayList<>(),
-//                new ArrayList<>(),
-//                "Мышечные повреждения",
-//                Type.RISK,
-//                mapPointRepository.findById(3).get(),
-//                new ArrayList<>()
-//        ));
-//
-//
-//        riskRepository.save(new Risk(
-//                4,
-//                "Риск возникновения пожара из-за неисправной электропроводки и перегрузки электрических линий в производственном цехе.",
-//                Criticaly.RED,
-//                Status.IN_WORK,
-//                locationRepository.findById(4).get(),
-//                false,
-//                userRepository.findById(3L).get(),
-//                LocalDateTime.of(2025, 12, 11, 15, 11, 12),
-//                null,
-//                new ArrayList<>(),
-//                new ArrayList<>(),
-//                "Пожар",
-//                Type.RISK,
-//                mapPointRepository.findById(4).get(),
-//                new ArrayList<>()
-//        ));
-//
+        riskRepository.save(new Risk(
+                1,
+                "Риск получения тяжелой травмы при спуске с лестницы из-за несоответствия угла наклона лестницы (более 75 градусов).",
+                Criticaly.GREEN,
+                Status.IN_WORK,
+                locationRepository.findById(1).get(),
+                false,
+                userRepository.findById(4L).get(),
+                LocalDateTime.of(2023, 12, 11, 15, 11, 12),
+                null,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                "Падение с высоты",
+                Type.RISK,
+                mapPointRepository.findById(1).get(),
+                new ArrayList<>()
+        ));
+
+        riskRepository.save(new Risk(
+                2,
+                "Риск получения тяжелой травмы при спуске с лестницы из-за несоответствия угла наклона лестницы (более 75 градусов).",
+                Criticaly.ORANGE,
+                Status.IN_WORK,
+                locationRepository.findById(2).get(),
+                false,
+                userRepository.findById(5L).get(),
+                LocalDateTime.of(2024, 12, 10, 15, 11, 12),
+                null,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                "Падение с высоты",
+                Type.RISK,
+                mapPointRepository.findById(2).get(),
+                new ArrayList<>()
+        ));
+
+        riskRepository.save(new Risk(
+                3,
+                "Риск получения травмы при переносе тяжелых грузов вручную, из-за недостатка механических средств для транспортировки и неправильной осанки при поднятии грузов.",
+                Criticaly.GREEN,
+                Status.IN_WORK,
+                locationRepository.findById(3).get(),
+                false,
+                userRepository.findById(6L).get(),
+                LocalDateTime.of(2023, 12, 11, 15, 11, 12),
+                null,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                "Мышечные повреждения",
+                Type.RISK,
+                mapPointRepository.findById(3).get(),
+                new ArrayList<>()
+        ));
+
+
+        riskRepository.save(new Risk(
+                4,
+                "Риск возникновения пожара из-за неисправной электропроводки и перегрузки электрических линий в производственном цехе.",
+                Criticaly.RED,
+                Status.IN_WORK,
+                locationRepository.findById(4).get(),
+                false,
+                userRepository.findById(6L).get(),
+                LocalDateTime.of(2025, 12, 11, 15, 11, 12),
+                null,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                "Пожар",
+                Type.RISK,
+                mapPointRepository.findById(4).get(),
+                new ArrayList<>()
+        ));
+
         return "ok";
     }
 }

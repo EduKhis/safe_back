@@ -7,32 +7,36 @@ import java.util.List;
 public class FileAggregator {
 
     private static final String[] filesToAggregate = {
-            "C:\\Users\\e.khisamutdinov\\IdeaProjects\\safety_back\\src\\main\\resources\\application.yaml",
-            "C:\\Users\\e.khisamutdinov\\IdeaProjects\\safety_back\\pom.xml",
-            "C:\\Users\\e.khisamutdinov\\IdeaProjects\\safety_back\\src\\main\\java\\com\\example\\demo\\controller\\RiskFormController.java",
-            "C:\\Users\\e.khisamutdinov\\IdeaProjects\\safe_back\\src\\main\\java\\com\\example\\demo\\entity\\User.java",
-            "C:\\Users\\e.khisamutdinov\\IdeaProjects\\safe_back\\src\\main\\java\\com\\example\\demo\\entity\\Role.java",
+   //         "C:\\Users\\e.khisamutdinov\\IdeaProjects\\safety_back\\src\\main\\resources\\application.yaml",
+    //        "C:\\Users\\e.khisamutdinov\\IdeaProjects\\safety_back\\pom.xml",
+    //        "C:\\Users\\e.khisamutdinov\\IdeaProjects\\safety_back\\src\\main\\java\\com\\example\\demo\\controller\\RiskFormController.java",
+    //        "C:\\Users\\e.khisamutdinov\\IdeaProjects\\safe_back\\src\\main\\java\\com\\example\\demo\\entity\\User.java",
+    //        "C:\\Users\\e.khisamutdinov\\IdeaProjects\\safe_back\\src\\main\\java\\com\\example\\demo\\entity\\Role.java",
 
-            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\Content.jsx",
-            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\MainContent.jsx",
-//            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\MapComponent.jsx",
- //           "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\RiskForm.jsx",
-  //          "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\SectionHeader.jsx",
- //           "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\Sidebar.jsx",
-            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\components\\TopMenu.jsx",
+            "D:\\D\\SAFE\\client\\safe_front\\src\\components\\Content.jsx",
+            "D:\\D\\SAFE\\client\\safe_front\\src\\components\\MainContent.jsx",
+            "D:\\D\\SAFE\\client\\safe_front\\src\\components\\MapComponent.jsx",
+            "D:\\D\\SAFE\\client\\safe_front\\src\\components\\RiskForm.jsx",
+            "D:\\D\\SAFE\\client\\safe_front\\src\\components\\SectionHeader.jsx",
+            "D:\\D\\SAFE\\client\\safe_front\\src\\components\\Sidebar.jsx",
+            "D:\\D\\SAFE\\client\\safe_front\\src\\components\\Login.jsx",
+            "D:\\D\\SAFE\\client\\safe_front\\src\\components\\Register.jsx",
+            "D:\\D\\SAFE\\client\\safe_front\\src\\components\\RiskDetail.jsx",
+            "D:\\D\\SAFE\\client\\safe_front\\src\\components\\TopMenu.jsx",
+            "D:\\D\\SAFE\\client\\safe_front\\src\\components\\Content.jsx",
 
-            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\App.js",
+            "D:\\D\\SAFE\\client\\safe_front\\src\\App.js",
 
   //          "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\App.css",
-  //          "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\Content.css",
-  //          "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\MainContent.css",
+            //         "D:\\D\\SAFE\\client\\safe_front\\src\\styles\\Content.css",
+     //       "D:\\D\\SAFE\\client\\safe_front\\src\\styles\\MainContent.css",
 //            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\MapComponent.css",
   //          "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\RiskForm.css",
- //           "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\SectionHeader.css",
+    //        "D:\\D\\SAFE\\client\\safe_front\\src\\styles\\SectionHeader.css",
  //           "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\Sidebar.css",
-//            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\src\\styles\\TopMenu.css",
+   //         "D:\\D\\SAFE\\client\\safe_front\\src\\styles\\TopMenu.css",
 
-            "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\package.json"
+    //        "C:\\Users\\e.khisamutdinov\\react\\deep\\my-app\\package.json"
     };
 
     public static void text() {

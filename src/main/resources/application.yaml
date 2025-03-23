@@ -39,8 +39,8 @@ photo:
     upload: /images/
 
 cors:
-  origins: ${CORS:http://yourrisk.ru:3000}
-#  origins: ${CORS:http://localhost:3000}
+#  origins: ${CORS:http://yourrisk.ru:3000}
+  origins: ${CORS:http://localhost:3000}
 
 
 bezkoder:
@@ -50,8 +50,10 @@ bezkoder:
 
 
 
-#авторизация аутентификация
+#время жизни токена на фронте и бэке
 #страница риска
+#страница человека
+#топменю справа кнопки
 #https nginx
 #хранение фото на сервере не в папке с проектом
 #валидация полей при создании риска

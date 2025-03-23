@@ -21,6 +21,7 @@ public class RiskController {
 
     @GetMapping("/risks")
     public List<RiskContentDto> getRisks() {
+        System.out.println(13);
         return riskFormService.getRisks();
     }
 
