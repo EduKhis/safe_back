@@ -61,16 +61,6 @@ public class InitController {
 //    }
 
 
-
-
-
-
-
-
-
-
-
-
     @GetMapping("/init")
     public String init() {
 
@@ -113,7 +103,7 @@ public class InitController {
                 userRepository.findById(4L).get(),
                 LocalDateTime.of(2023, 12, 11, 15, 11, 12),
                 null,
-                new ArrayList<>(),
+                List.of("IMG_6729.png"),
                 new ArrayList<>(),
                 "Падение с высоты",
                 Type.RISK,
@@ -131,7 +121,7 @@ public class InitController {
                 userRepository.findById(5L).get(),
                 LocalDateTime.of(2024, 12, 10, 15, 11, 12),
                 null,
-                new ArrayList<>(),
+                List.of("Screenshot 2025-02-18 213433.png"),
                 new ArrayList<>(),
                 "Падение с высоты",
                 Type.RISK,
@@ -149,7 +139,7 @@ public class InitController {
                 userRepository.findById(6L).get(),
                 LocalDateTime.of(2023, 12, 11, 15, 11, 12),
                 null,
-                new ArrayList<>(),
+                List.of("Screenshot 2025-02-20 102446.png"),
                 new ArrayList<>(),
                 "Мышечные повреждения",
                 Type.RISK,
@@ -168,7 +158,7 @@ public class InitController {
                 userRepository.findById(6L).get(),
                 LocalDateTime.of(2025, 12, 11, 15, 11, 12),
                 null,
-                new ArrayList<>(),
+                List.of("Screenshot 2025-03-05 092956.png"),
                 new ArrayList<>(),
                 "Пожар",
                 Type.RISK,

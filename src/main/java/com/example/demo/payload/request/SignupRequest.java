@@ -23,6 +23,8 @@ public class SignupRequest {
     @Email
     private String email;
 
+    private String tg;
+
     private Set<String> role;
 
     @NotBlank

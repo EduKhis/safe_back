@@ -32,6 +32,8 @@ public class User {
     @Email
     private String email;
 
+    private String tg;
+
     @NotBlank
     @Size(max = 120)
     private String password;
@@ -45,9 +47,10 @@ public class User {
     public User() {
     }
 
-    public User(String username, String email, String password) {
+    public User(String username, String email, String tg, String password) {
         this.username = username;
         this.email = email;
+        this.tg = tg;
         this.password = password;
     }
 

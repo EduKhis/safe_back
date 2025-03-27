@@ -1,5 +1,6 @@
 package com.example.demo.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,29 +17,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableMethodSecurity
+@RequiredArgsConstructor
 // (securedEnabled = true,
 // jsr250Enabled = true,
 // prePostEnabled = true) // by default
 public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
+   // @Autowired
+    private final UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    private final AuthEntryPointJwt unauthorizedHandler;
 
-//    @Bean
-//    public AuthTokenFilter authenticationJwtTokenFilter() {
-//        return new AuthTokenFilter();
-//    }
+    private final JwtUtils jwtUtils;
+
+    @Bean
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter(jwtUtils,userDetailsService);
+    }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
-
         return authProvider;
     }
 
@@ -59,14 +60,14 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/api/**").permitAll()
+                                .requestMatchers("/api/**").permitAll()  //справить
                                 .requestMatchers("/map/**").permitAll()
                                 .anyRequest().authenticated()
                 );
 
         http.authenticationProvider(authenticationProvider());
 
-        http.addFilterBefore(new AuthTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

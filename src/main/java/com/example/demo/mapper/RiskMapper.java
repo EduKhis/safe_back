@@ -42,7 +42,6 @@ public class RiskMapper {
 
         List<RiskContentDto> risks = new ArrayList<>();
         for (Risk risk : risksR) {
-            System.out.println(risk.getPhotosList().isEmpty() ? null : risk.getPhotosList().get(0));
             risks.add(RiskContentDto.builder()
                     .photo(risk.getPhotosList().isEmpty() ? null : url + risk.getPhotosList().get(0))
                     .id(risk.getId())
