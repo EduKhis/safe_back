@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "${cors.origins}")
 @RequiredArgsConstructor
 public class RiskController {
 

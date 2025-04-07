@@ -1,9 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.*;
-import com.example.demo.entity.Risk;
-import com.example.demo.repository.RiskRepository;
-import com.example.demo.mapper.RiskMapper;
 import com.example.demo.service.MapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@CrossOrigin(origins = "${cors.origins}")
 @RestController
-@RequestMapping("/map")
+@RequestMapping("/api/map")
 @RequiredArgsConstructor
 public class MapController {
 
