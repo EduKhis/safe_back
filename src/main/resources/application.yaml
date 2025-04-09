@@ -39,8 +39,8 @@ photo:
     upload: /images/
 
 cors:
-  origins: ${CORS:http://yourrisk.ru:3000}
- # origins: ${CORS:http://localhost:3000}
+ # origins: ${CORS:http://yourrisk.ru:3000}
+  origins: ${CORS:http://localhost:3000}
 
 
 bezkoder:
